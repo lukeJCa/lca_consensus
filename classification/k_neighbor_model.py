@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn import svm
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
 from sklearn.metrics import mean_absolute_error
@@ -17,8 +17,16 @@ from sklearn.metrics import accuracy_score
 ##
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##	
 
-class SVCModel():
-	def __init__(self, df, label, holding_frame):
+param_grid = {
+    'n_neighbors': (1,10, 1),
+    'leaf_size': (20,40,1),
+    'p': (1,2),
+    'weights': ('uniform', 'distance'),
+    'metric': ('minkowski', 'chebyshev'),
+}
+
+class KNeighborModel():
+	def __init__(self, df, label):
 		self.df = df
 		self.label = label
 
@@ -29,9 +37,9 @@ class SVCModel():
 
 
 		## Implement the model
-		parameters = {'kernel':('linear', 'poly', 'rbf', 'sigmoid'), 'C':[1, 10]}
-		svc = svm.SVC(max_iter = -1)
-		clf = GridSearchCV(svc, parameters)
+
+		neigh = KNeighborsClassifier()
+		clf = GridSearchCV(neigh, param_grid)
 		clf.fit(self.X_train, self.y_train)
 		pred = clf.predict(self.X_test)
 		self.score = mean_absolute_error(pred, self.y_test)
@@ -44,7 +52,7 @@ class SVCModel():
 	def get_score(self, verbose = False):
 
 		if verbose:
-			print("The support vector machine model produced: "  + str(self.score) + " MAE and " + str(self.accuracy) + " accuracy percentage")
+			print("The K nearest neighbor model produced: "  + str(self.score) + " MAE and " + str(self.accuracy) + " accuracy percentage")
 
 		return self.score
 	def sanity_check(self):

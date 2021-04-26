@@ -4,6 +4,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
 from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import accuracy_score
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 ##
@@ -16,7 +17,7 @@ from sklearn.metrics import mean_absolute_error
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##	
 
 class LinearModel():
-	def __init__(self, df, label):
+	def __init__(self, df, label, holding_frame):
 		self.df = df
 		self.label = label
 
@@ -30,7 +31,7 @@ class LinearModel():
 		reg = LinearRegression().fit(self.X_train, self.y_train)
 		pred = reg.predict(self.X_test)
 		self.score = mean_absolute_error(pred, self.y_test)
-		
+		self.accuracy = accuracy_score(pred, self.y_test)
 
 	def scale_values(self):
 		scaled_df = pd.DataFrame(minmax_scale(self.dropped_df), columns = self.dropped_df.columns)
@@ -39,7 +40,7 @@ class LinearModel():
 	def get_score(self, verbose = False):
 
 		if verbose:
-			print("so you want the truth")
+			print("The linear model produced: "  + str(self.score) + " MAE and " + str(self.accuracy) + " accuracy percentage")
 
 		return self.score
 	def sanity_check(self):

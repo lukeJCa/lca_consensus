@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
-from sklearn import svm
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
 from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
@@ -17,8 +16,8 @@ from sklearn.metrics import accuracy_score
 ##
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##	
 
-class SVCModel():
-	def __init__(self, df, label, holding_frame):
+class AdaboostModel():
+	def __init__(self, df, label):
 		self.df = df
 		self.label = label
 
@@ -29,9 +28,8 @@ class SVCModel():
 
 
 		## Implement the model
-		parameters = {'kernel':('linear', 'poly', 'rbf', 'sigmoid'), 'C':[1, 10]}
-		svc = svm.SVC(max_iter = -1)
-		clf = GridSearchCV(svc, parameters)
+
+		clf = AdaBoostClassifier(n_estimators=1000, random_state = 42)
 		clf.fit(self.X_train, self.y_train)
 		pred = clf.predict(self.X_test)
 		self.score = mean_absolute_error(pred, self.y_test)
@@ -44,7 +42,7 @@ class SVCModel():
 	def get_score(self, verbose = False):
 
 		if verbose:
-			print("The support vector machine model produced: "  + str(self.score) + " MAE and " + str(self.accuracy) + " accuracy percentage")
+			print("The adaboost model produced: "  + str(self.score) + " MAE and " + str(self.accuracy) + " accuracy percentage")
 
 		return self.score
 	def sanity_check(self):
